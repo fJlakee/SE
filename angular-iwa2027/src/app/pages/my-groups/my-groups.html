@@ -1,0 +1,43 @@
+<section class="page">
+  <header class="panel header">
+    <div>
+      <p class="eyebrow">My groups</p>
+      <h1>Groups I own</h1>
+      <p class="lede">These are the subscription groups created by the current signed-in account.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Loading your groups...</p>
+  } @else if (errorMessage()) {
+    <p class="status status--error">{{ errorMessage() }}</p>
+  } @else if (groups().length === 0) {
+    <article class="panel empty-card">
+      <h2>No owned groups yet</h2>
+      <p>Create your first group from the navigation above. After that it will appear here and on the owner applications screen.</p>
+      <a class="link" routerLink="/groups/new">Create group</a>
+    </article>
+  } @else {
+    <div class="grid">
+      @for (group of groups(); track group.id) {
+        <article class="panel group-card">
+          <div class="row">
+            <div>
+              <h2>{{ group.title }}</h2>
+              <p>{{ group.service.name }} - {{ group.service.category || 'General' }}</p>
+            </div>
+            <app-status-badge [value]="group.status" kind="group" />
+          </div>
+
+          <div class="meta">
+            <span>{{ availableSlots(group) }} available</span>
+            <span>{{ group.occupiedSlots }}/{{ group.totalSlots }} filled</span>
+            <span>{{ group.monthlyPrice }} {{ group.currency }}</span>
+          </div>
+
+          <a class="link" [routerLink]="['/groups', group.id]">Open details</a>
+        </article>
+      }
+    </div>
+  }
+</section>

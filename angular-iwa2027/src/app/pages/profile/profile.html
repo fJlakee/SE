@@ -1,0 +1,43 @@
+<section class="page">
+  <header class="panel header">
+    <div>
+      <p class="eyebrow">Profile</p>
+      <h1>Account status</h1>
+      <p class="lede">Current auth state, roles, and account restrictions.</p>
+    </div>
+  </header>
+
+  <article class="panel profile-card">
+    <div class="row">
+      <div>
+        <h2>{{ auth.fullName() || 'Anonymous' }}</h2>
+        <p>{{ auth.identifier() || 'Not signed in' }}</p>
+      </div>
+      <app-status-badge [value]="auth.blocked() ? 'BLOCKED' : 'ACTIVE'" kind="auth" />
+    </div>
+
+    @if (auth.blocked()) {
+      <p class="warning">
+        This account is blocked. The backend will reject protected actions until the issue is resolved.
+      </p>
+    }
+
+    <div class="meta">
+      <span>Identifier: {{ auth.identifier() || 'n/a' }}</span>
+      <span>Token type: {{ auth.session().tokenType }}</span>
+      <span>JWT: {{ tokenPreview() }}</span>
+    </div>
+
+    <div class="roles">
+      <span class="roles-label">Roles</span>
+      <div class="chips">
+        @for (role of auth.roles(); track role) {
+          <app-status-badge [value]="role" kind="auth" />
+        } @empty {
+          <span class="empty">No roles stored.</span>
+        }
+      </div>
+    </div>
+  </article>
+</section>
+

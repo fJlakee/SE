@@ -1,0 +1,120 @@
+<section class="page">
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Marketplace</p>
+      <h1>Find open subscription slots or publish a group.</h1>
+      <p class="lede">
+        Search by service, available slots, and price. Authenticated owners can create groups and manage applications for their groups. Guests can join and confirm access.
+      </p>
+    </div>
+
+<!--    <div class="hero-card">-->
+<!--      <strong>Quick facts</strong>-->
+<!--      <span>{{ services().length }} services</span>-->
+<!--      <span>{{ groups().length }} open groups</span>-->
+<!--      <span>JWT protected requests enabled</span>-->
+<!--    </div>-->
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Search groups</h2>
+        <p>Use the filters below to find matching slots.</p>
+      </div>
+
+      <button type="button" class="ghost" (click)="resetSearch()">Reset</button>
+    </div>
+
+    <form class="search-grid" (ngSubmit)="search()">
+      <label>
+        Service name
+        <input name="serviceName" [(ngModel)]="filters.serviceName" placeholder="Spotify, Netflix..." />
+      </label>
+
+      <label>
+        Minimum available slots
+        <input name="minAvailableSlots" type="number" min="1" [(ngModel)]="filters.minAvailableSlots" />
+      </label>
+
+      <label>
+        Maximum price
+        <input name="maxPrice" type="number" min="0" step="0.01" [(ngModel)]="filters.maxPrice" />
+      </label>
+
+      <button type="submit" [disabled]="loadingSearch()">
+        {{ loadingSearch() ? 'Searching...' : 'Search' }}
+      </button>
+    </form>
+
+    @if (searchMessage()) {
+      <p class="notice">{{ searchMessage() }}</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="notice notice--error">{{ errorMessage() }}</p>
+    }
+  </section>
+
+  <section class="grid">
+    <article class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Services</h2>
+          <p>Reference list used by the search and creation flows.</p>
+        </div>
+      </div>
+
+      @if (loadingServices()) {
+        <p class="empty">Loading services...</p>
+      } @else if (services().length === 0) {
+        <p class="empty">No services loaded yet.</p>
+      } @else {
+        <div class="chip-list">
+          @for (service of services(); track service.id) {
+            <span class="chip">{{ service.name }}<small>{{ service.category || 'General' }}</small></span>
+          }
+        </div>
+      }
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>{{ searchActive() ? 'Search results' : 'Open groups' }}</h2>
+          <p>{{ searchActive() ? 'Matching the current filters.' : 'Latest public groups.' }}</p>
+        </div>
+      </div>
+
+      @if (loadingGroups() && !searchActive()) {
+        <p class="empty">Loading groups...</p>
+      } @else if (visibleGroups().length === 0) {
+        <p class="empty">No groups available.</p>
+      } @else {
+        <div class="group-list">
+          @for (group of visibleGroups(); track group.id) {
+            <article class="group-card">
+              <div class="group-top">
+                <div>
+                  <h3>{{ group.title }}</h3>
+                  <p>{{ group.service.name }} · {{ group.service.category || 'General' }}</p>
+                </div>
+                <app-status-badge [value]="group.status" kind="group" />
+              </div>
+
+              <div class="meta">
+                <span>{{ availableSlots(group) }} available slots</span>
+                <span>{{ group.occupiedSlots }}/{{ group.totalSlots }} filled</span>
+                <span>{{ group.monthlyPrice }} {{ group.currency }} / month</span>
+              </div>
+
+              <p class="owner">Owner: {{ group.owner?.fullName || 'System user' }}</p>
+
+              <a class="link" [routerLink]="['/groups', group.id]">View details</a>
+            </article>
+          }
+        </div>
+      }
+    </article>
+  </section>
+</section>

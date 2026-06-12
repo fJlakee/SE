@@ -1,0 +1,88 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  padding: 1.3rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(17, 32, 51, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 42px rgba(17, 32, 51, 0.08);
+}
+
+.header h1,
+.group-card h2 {
+  margin: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #62708a;
+  font-size: 0.75rem;
+}
+
+.lede {
+  margin: 0.5rem 0 0;
+  color: #53657d;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.group-card {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  color: #5a6a80;
+}
+
+.link {
+  color: #12355b;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.status {
+  margin: 0;
+  color: #52637b;
+}
+
+.status--error {
+  color: #9b1731;
+}
+
+.empty-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.empty-card h2 {
+  margin: 0;
+}
+
+.empty-card p {
+  margin: 0;
+  color: #5a6a80;
+}

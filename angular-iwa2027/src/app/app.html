@@ -1,0 +1,54 @@
+<main class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <p class="eyebrow">Shared subscriptions</p>
+      <h1>Subscription sharing marketplace</h1>
+    </div>
+
+    <div class="session">
+      @if (auth.isLoggedIn()) {
+        <div class="session-row">
+          <strong>{{ auth.fullName() || 'Signed in user' }}</strong>
+          <app-status-badge [value]="auth.blocked() ? 'BLOCKED' : 'ACTIVE'" kind="auth" />
+        </div>
+        <span>{{ auth.identifier() }}</span>
+        <div class="chips">
+          @for (role of auth.roles(); track role) {
+            <app-status-badge [value]="role" kind="auth" />
+          }
+        </div>
+        @if (auth.blocked()) {
+          <p class="blocked">This account is blocked.</p>
+        }
+        <button type="button" (click)="logout()">Logout</button>
+      } @else {
+        <strong>Anonymous visitor</strong>
+        <span>Sign in to apply, confirm access, and view protected pages.</span>
+        <div class="chips">
+          <a routerLink="/login" class="action-link">Login</a>
+          <a routerLink="/register" class="action-link secondary">Register</a>
+        </div>
+      }
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a routerLink="/browse" routerLinkActive="active">Browse</a>
+
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/groups/new" routerLinkActive="active">Create Group</a>
+      <a routerLink="/my-groups" routerLinkActive="active">My Groups</a>
+      <a routerLink="/my-applications" routerLinkActive="active">My Applications</a>
+      <a routerLink="/owner-applications" routerLinkActive="active">Owner Applications</a>
+      <a routerLink="/profile" routerLinkActive="active">Profile</a>
+    }
+
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin/services" routerLinkActive="active">Manage Services</a>
+    }
+  </nav>
+
+  <section class="content">
+    <router-outlet />
+  </section>
+</main>

@@ -1,0 +1,98 @@
+<section class="page">
+  <header class="panel header">
+    <div>
+      <p class="eyebrow">Owner applications</p>
+      <h1>Applications for my groups</h1>
+      <p class="lede">Approve, reject, grant access, and confirm payment for the groups you own.</p>
+    </div>
+  </header>
+
+  @if (actionMessage()) {
+    <p class="status">{{ actionMessage() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="status">Loading owner applications...</p>
+  } @else if (errorMessage()) {
+    <p class="status status--error">{{ errorMessage() }}</p>
+  } @else if (groups().length === 0) {
+    <p class="status">No applications found for your groups.</p>
+  } @else {
+    <div class="stack">
+      @for (entry of groups(); track entry.group.id) {
+        <article class="panel group-card">
+          <div class="row">
+            <div>
+              <h2>{{ entry.group.title }}</h2>
+              <p>{{ entry.group.service.name }} - {{ entry.group.occupiedSlots }}/{{ entry.group.totalSlots }} filled</p>
+            </div>
+            <app-status-badge [value]="entry.group.status" kind="group" />
+          </div>
+
+          <div class="meta">
+            <span>Payment: {{ entry.group.paymentConfirmedAt || 'Not confirmed' }}</span>
+            <span>Freeze until: {{ entry.group.freezeUntil || 'n/a' }}</span>
+          </div>
+
+          <div class="actions">
+            @if (!entry.group.paymentConfirmedAt) {
+              <button
+                type="button"
+                (click)="confirmPayment(entry)"
+                [disabled]="!canConfirmPayment(entry) || actionKey() === 'payment-' + entry.group.id"
+              >
+                {{ subscriptionPaymentLabel(entry) }}
+              </button>
+            }
+          </div>
+
+          <div class="applications">
+            @for (application of entry.applications; track application.id) {
+              <article class="application-card">
+                <div class="row">
+                  <div>
+                    <h3>{{ application.applicant?.fullName || 'Unknown applicant' }}</h3>
+                    <p>{{ application.requestedAt || 'Requested date not set' }}</p>
+                  </div>
+                  <app-status-badge [value]="application.status" kind="application" />
+                </div>
+
+                <div class="meta">
+                  <span>Reserved: {{ application.reservedAmount ?? 'n/a' }}</span>
+                  <span class="paid" [class.paid--done]="application.guestPaidAt">{{ paymentLabel(application) }}</span>
+                  <span>Access: {{ application.accessGrantedAt || 'n/a' }}</span>
+                  <span>Payout: {{ application.adminPayoutAt || 'n/a' }}</span>
+                </div>
+
+                <div class="actions">
+                  @if (applicationActionState(application) === 'pending') {
+                    <button type="button" (click)="approve(entry.group.id, application.id)" [disabled]="actionKey() === 'approve-' + application.id">
+                      {{ actionKey() === 'approve-' + application.id ? 'Approving...' : 'Approve' }}
+                    </button>
+                    <button type="button" class="secondary" (click)="reject(entry.group.id, application.id)" [disabled]="actionKey() === 'reject-' + application.id">
+                      {{ actionKey() === 'reject-' + application.id ? 'Rejecting...' : 'Reject' }}
+                    </button>
+                  }
+
+                  @if (shouldShowMarkAccess(application)) {
+                    <button
+                      type="button"
+                      (click)="markAccess(entry.group.id, application.id)"
+                      [disabled]="!canMarkAccess(entry.group, application) || actionKey() === 'access-' + application.id"
+                    >
+                      {{ markAccessLabel(entry.group, application) }}
+                    </button>
+                  }
+                </div>
+
+                @if (actionKey() === 'access-' + application.id) {
+                  <p class="status">Sending access confirmation to the backend...</p>
+                }
+              </article>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  padding: 1.3rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(17, 32, 51, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 42px rgba(17, 32, 51, 0.08);
+}
+
+.header h1,
+.profile-card h2 {
+  margin: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #62708a;
+  font-size: 0.75rem;
+}
+
+.lede {
+  margin: 0.5rem 0 0;
+  color: #53657d;
+}
+
+.profile-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  color: #5a6a80;
+}
+
+.roles {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.roles-label {
+  font-weight: 700;
+  color: #22334c;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.warning {
+  margin: 0;
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: rgba(194, 34, 62, 0.12);
+  color: #9b1731;
+}
+
+.empty {
+  color: #5a6a80;
+}
+

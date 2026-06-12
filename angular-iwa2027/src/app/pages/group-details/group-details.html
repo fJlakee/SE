@@ -1,0 +1,73 @@
+<section class="page">
+  <a class="back-link" routerLink="/browse">Back to browse</a>
+
+  @if (loading()) {
+    <p class="status">Loading group details...</p>
+  } @else if (errorMessage()) {
+    <p class="status status--error">{{ errorMessage() }}</p>
+  } @else if (group()) {
+    <article class="panel">
+      <header class="head">
+        <div>
+          <p class="eyebrow">{{ group()!.service.name }}</p>
+          <h1>{{ group()!.title }}</h1>
+          <p class="lede">{{ group()!.service.category || 'General' }} service sharing group</p>
+        </div>
+        <app-status-badge [value]="group()!.status" kind="group" />
+      </header>
+
+      <div class="stats">
+        <div>
+          <span>Slots</span>
+          <strong>{{ group()!.occupiedSlots }}/{{ group()!.totalSlots }}</strong>
+        </div>
+        <div>
+          <span>Available</span>
+          <strong>{{ availableSlots(group()) }}</strong>
+        </div>
+        <div>
+          <span>Price</span>
+          <strong>{{ group()!.monthlyPrice }} {{ group()!.currency }}</strong>
+        </div>
+        <div>
+          <span>Owner</span>
+          <strong>{{ group()!.owner?.fullName || 'System user' }}</strong>
+        </div>
+      </div>
+
+      <div class="info">
+        <p><span>Created:</span> {{ group()!.createdAt || 'Not provided' }}</p>
+        <p><span>Payment confirmed:</span> {{ group()!.paymentConfirmedAt || 'Not confirmed yet' }}</p>
+        <p><span>Freeze until:</span> {{ group()!.freezeUntil || 'Not set' }}</p>
+      </div>
+
+      @if (auth.isLoggedIn()) {
+        <div class="actions">
+          @if (isOwner(group())) {
+            <p class="status">You own this group.</p>
+            <a class="owner-link" routerLink="/owner-applications">Open owner applications</a>
+          }
+
+          @if (canApply(group())) {
+            <button type="button" (click)="apply()" [disabled]="actionLoading()">
+              {{ actionLoading() ? 'Submitting...' : 'Apply to join' }}
+            </button>
+          } @else {
+            @if (!isOwner(group())) {
+              <p class="status">This group is not accepting new applications right now.</p>
+            }
+          }
+        </div>
+      } @else {
+        <p class="status">
+          Sign in to apply.
+          <a routerLink="/login" [queryParams]="{ redirectTo: '/groups/' + group()!.id }">Login</a>
+        </p>
+      }
+
+      @if (actionMessage()) {
+        <p class="status">{{ actionMessage() }}</p>
+      }
+    </article>
+  }
+</section>

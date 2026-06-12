@@ -1,0 +1,74 @@
+<section class="page">
+  <header class="panel header">
+    <div>
+      <p class="eyebrow">My applications</p>
+      <h1>Join requests and access flow</h1>
+      <p class="lede">Track pending applications, access confirmation, withdrawals, and refunds here.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Loading your applications...</p>
+  } @else if (errorMessage()) {
+    <p class="status status--error">{{ errorMessage() }}</p>
+  } @else if (applications().length === 0) {
+    <p class="status">No applications submitted yet.</p>
+  } @else {
+    <div class="grid">
+      @for (application of applications(); track application.id) {
+        <article class="panel application-card">
+          <div class="row">
+            <div>
+              <h2>{{ application.group?.title || 'Unknown group' }}</h2>
+              <p>{{ application.group?.service?.name || 'Unknown service' }}</p>
+            </div>
+            <app-status-badge [value]="application.status" kind="application" />
+          </div>
+
+          <div class="meta">
+            <span>Requested: {{ application.requestedAt || 'Not set' }}</span>
+            <span>Reserved: {{ application.reservedAmount ?? 'n/a' }}</span>
+            <span class="paid" [class.paid--done]="application.guestPaidAt">{{ paymentLabel(application) }}</span>
+            <span>Group payment: {{ application.group?.paymentConfirmedAt || 'Not confirmed' }}</span>
+            <span>Freeze: {{ application.freezeUntil || application.group?.freezeUntil || 'n/a' }}</span>
+            <span>Access: {{ application.accessGrantedAt || 'n/a' }}</span>
+            <span>Payout: {{ application.adminPayoutAt || 'n/a' }}</span>
+          </div>
+
+          @if (application.withdrawReason) {
+            <p class="reason">Reason: {{ application.withdrawReason }}</p>
+          }
+
+          <div class="actions">
+            @if (canPay(application)) {
+              <button type="button" (click)="pay(application)" [disabled]="actionLoading() === application.id">
+                {{ actionLoading() === application.id ? 'Paying...' : 'Pay' }}
+              </button>
+            }
+
+            @if (canConfirm(application)) {
+              <button type="button" (click)="confirm(application)" [disabled]="actionLoading() === application.id">
+                Confirm access
+              </button>
+            }
+
+            @if (shouldShowWithdraw(application)) {
+              <button
+                type="button"
+                class="secondary"
+                (click)="withdraw(application)"
+                [disabled]="!canWithdraw(application) || actionLoading() === application.id"
+              >
+                {{ withdrawLabel(application) }}
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  @if (actionMessage()) {
+    <p class="status">{{ actionMessage() }}</p>
+  }
+</section>

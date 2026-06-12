@@ -1,0 +1,55 @@
+<section class="page">
+  <header class="panel header">
+    <div>
+      <p class="eyebrow">Admin</p>
+      <h1>Manage services</h1>
+      <p class="lede">Create new subscription services and review the current catalog.</p>
+    </div>
+  </header>
+
+  <article class="panel">
+    @if (errorMessage()) {
+      <p class="status status--error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="status status--success">{{ successMessage() }}</p>
+    }
+
+    <form class="form-grid" (ngSubmit)="create()">
+      <label>
+        Name
+        <input name="name" [(ngModel)]="form.name" placeholder="Disney+" />
+      </label>
+
+      <label>
+        Category
+        <input name="category" [(ngModel)]="form.category" placeholder="Video" />
+      </label>
+
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Saving...' : 'Create service' }}
+      </button>
+    </form>
+  </article>
+
+  <section class="grid">
+    @if (loading()) {
+      <p class="status">Loading services...</p>
+    } @else {
+      @for (service of services(); track service.id) {
+        <article class="panel service-card">
+          <div class="row">
+            <div>
+              <h2>{{ service.name }}</h2>
+              <p>{{ service.category || 'General' }}</p>
+            </div>
+            <app-status-badge [value]="service.active ? 'ACTIVE' : 'INACTIVE'" kind="service" />
+          </div>
+          <span class="meta">ID {{ service.id }}</span>
+        </article>
+      }
+    }
+  </section>
+</section>
+

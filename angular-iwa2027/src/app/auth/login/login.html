@@ -1,0 +1,37 @@
+<section class="auth-shell">
+  <div class="auth-copy">
+    <p class="eyebrow">Shared subscriptions</p>
+    <h1>Sign in to manage groups and access.</h1>
+    <p class="lede">
+      Use your passport number or phone number as the identifier.
+    </p>
+  </div>
+
+  <form class="auth-panel" (ngSubmit)="login()">
+    <h2>Login</h2>
+
+    @if (errorMessage()) {
+      <p class="message message--error">{{ errorMessage() }}</p>
+    }
+
+    <label>
+      Passport number or phone number
+      <input name="identifier" [(ngModel)]="identifier" autocomplete="username" />
+    </label>
+
+    <label>
+      Password
+      <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
+    </label>
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Signing in...' : 'Login' }}
+    </button>
+
+    <p class="auth-link">
+      No account yet?
+      <a routerLink="/register">Register</a>
+    </p>
+  </form>
+</section>
+

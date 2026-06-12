@@ -1,0 +1,51 @@
+<section class="auth-shell">
+  <div class="auth-copy">
+    <p class="eyebrow">Account verification</p>
+    <h1>Create one account per person.</h1>
+    <p class="lede">
+      Registration requires full name, passport or ID number, and phone number.
+    </p>
+  </div>
+
+  <form class="auth-panel" (ngSubmit)="register()">
+    <h2>Register</h2>
+
+    @if (errorMessage()) {
+      <p class="message message--error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="message message--success">{{ successMessage() }}</p>
+    }
+
+    <label>
+      Full name
+      <input name="fullName" [(ngModel)]="fullName" autocomplete="name" />
+    </label>
+
+    <label>
+      Passport number or ID number
+      <input name="passportNumber" [(ngModel)]="passportNumber" autocomplete="off" />
+    </label>
+
+    <label>
+      Phone number
+      <input name="phoneNumber" [(ngModel)]="phoneNumber" autocomplete="tel" />
+    </label>
+
+    <label>
+      Password
+      <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" />
+    </label>
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Creating account...' : 'Register' }}
+    </button>
+
+    <p class="auth-link">
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </form>
+</section>
+
